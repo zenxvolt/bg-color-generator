@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Color Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .color-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .color-picker-group {
+            grid-column: span 2;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .preset-colors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .preset-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .preset-color:hover {
+            transform: scale(1.1);
+            border-color: #333;
+        }
+
+        .dimension-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .preview-container {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-box {
+            width: 100%;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .color-info {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .color-codes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .color-code {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .export-btn:active {
+            transform: translateY(0);
+        }
+
+        .random-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .random-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .color-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .color-picker-group {
+                grid-column: span 1;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Background Color Generator</h1>
+        
+        <div class="main-content">
+            <div class="controls">
+                <h2 class="section-title">Color Settings</h2>
+                
+                <div class="form-group">
+                    <label>Color Input Method:</label>
+                    <select id="colorMethod">
+                        <option value="picker">Color Picker</option>
+                        <option value="hex">Hex Code</option>
+                        <option value="rgb">RGB</option>
+                        <option value="name">Color Name</option>
+                    </select>
+                </div>
+
+                <div id="colorInputs">
+                    <div class="color-picker-group">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="colorPicker" value="#667eea">
+                            <label for="colorPicker">Select Color</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Preset Colors:</label>
+                    <div class="preset-colors">
+                        <div class="preset-color tooltip" style="background: #ff6b6b" data-color="#ff6b6b">
+                            <span class="tooltiptext">Red</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #4ecdc4" data-color="#4ecdc4">
+                            <span class="tooltiptext">Teal</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #45b7d1" data-color="#45b7d1">
+                            <span class="tooltiptext">Blue</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #96ceb4" data-color="#96ceb4">
+                            <span class="tooltiptext">Green</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #feca57" data-color="#feca57">
+                            <span class="tooltiptext">Yellow</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #ff9ff3" data-color="#ff9ff3">
+                            <span class="tooltiptext">Pink</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #54a0ff" data-color="#54a0ff">
+                            <span class="tooltiptext">Light Blue</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #5f27cd" data-color="#5f27cd">
+                            <span class="tooltiptext">Purple</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #00d2d3" data-color="#00d2d3">
+                            <span class="tooltiptext">Cyan</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #ff6348" data-color="#ff6348">
+                            <span class="tooltiptext">Orange</span>
+                        </div>
+                    </div>
+                    <button class="random-btn" onclick="generateRandomColor()">🎲 Random Color</button>
+                </div>
+
+                <h2 class="section-title">Export Settings</h2>
+                
+                <div class="form-group">
+                    <label>Aspect Ratio:</label>
+                    <select id="aspectRatio" onchange="updateDimensions()">
+                        <option value="custom">Custom</option>
+                        <option value="1:1">1:1 (Square)</option>
+                        <option value="4:3">4:3 (Standard)</option>
+                        <option value="3:4">3:4 (Portrait)</option>
+                        <option value="16:9">16:9 (Widescreen)</option>
+                        <option value="9:16">9:16 (Mobile)</option>
+                        <option value="21:9">21:9 (Ultrawide)</option>
+                    </select>
+                </div>
+
+                <div class="dimension-inputs">
+                    <div class="form-group">
+                        <label>Width (px):</label>
+                        <input type="number" id="width" value="1920" min="1" max="4000">
+                    </div>
+                    <div class="form-group">
+                        <label>Height (px):</label>
+                        <input type="number" id="height" value="1080" min="1" max="4000">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>File Format:</label>
+                    <select id="fileFormat">
+                        <option value="png">PNG</option>
+                        <option value="jpg">JPG</option>
+                        <option value="webp">WebP</option>
+                    </select>
+                </div>
+
+                <button class="export-btn" onclick="exportImage()">
+                    Export Image
+                </button>
+            </div>
+
+            <div class="preview-section">
+                <h2 class="section-title">Preview</h2>
+                
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-box" id="previewBox">
+                    </div>
+                </div>
+
+                <div class="color-info">
+                    <h3 style="margin-bottom: 10px; color: #333;">Color Information:</h3>
+                    <div class="color-codes">
+                        <div class="color-code">
+                            <strong>HEX:</strong> <span id="hexCode">#667eea</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>RGB:</strong> <span id="rgbCode">rgb(102, 126, 234)</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>HSL:</strong> <span id="hslCode">hsl(228, 77%, 66%)</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>Size:</strong> <span id="sizeInfo">1920 x 1080 px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="exportCanvas" style="display: none;"></canvas>
+
+    <script>
+        let currentColor = '#667eea';
+
+        // Preset warna dengan nama
+        const namedColors = {
+            'coral': '#ff7f50',
+            'turquoise': '#40e0d0',
+            'gold': '#ffd700',
+            'salmon': '#fa8072',
+            'khaki': '#f0e68c',
+            'plum': '#dda0dd',
+            'orange': '#ffa500',
+            'lime': '#00ff00',
+            'navy': '#000080',
+            'maroon': '#800000',
+            'olive': '#808000',
+            'purple': '#800080',
+            'teal': '#008080',
+            'silver': '#c0c0c0',
+            'gray': '#808080',
+            'red': '#ff0000',
+            'green': '#008000',
+            'blue': '#0000ff',
+            'yellow': '#ffff00',
+            'cyan': '#00ffff',
+            'magenta': '#ff00ff',
+            'white': '#ffffff',
+            'black': '#000000'
+        };
+
+        // Event listeners
+        document.getElementById('colorMethod').addEventListener('change', updateColorInputs);
+        document.getElementById('colorPicker').addEventListener('input', updateColorFromPicker);
+        document.getElementById('width').addEventListener('input', updateFromWidth);
+        document.getElementById('height').addEventListener('input', updateFromHeight);
+
+        // Preset color listeners
+        document.querySelectorAll('.preset-color').forEach(color => {
+            color.addEventListener('click', function() {
+                currentColor = this.dataset.color;
+                updatePreview();
+                updateColorCodes();
+                document.getElementById('colorPicker').value = currentColor;
+            });
+        });
+
+        function updateColorInputs() {
+            const method = document.getElementById('colorMethod').value;
+            const container = document.getElementById('colorInputs');
+            
+            switch(method) {
+                case 'picker':
+                    container.innerHTML = `
+                        <div class="color-picker-group">
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="colorPicker" value="${currentColor}">
+                                <label for="colorPicker">Pilih Warna</label>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('colorPicker').addEventListener('input', updateColorFromPicker);
+                    break;
+                    
+                case 'hex':
+                    container.innerHTML = `
+                        <div class="form-group">
+                            <label>Hex Code:</label>
+                            <input type="text" id="hexInput" placeholder="#667EEA" value="${currentColor.toUpperCase()}" style="text-transform: uppercase;">
+                        </div>
+                    `;
+                    document.getElementById('hexInput').addEventListener('input', updateColorFromHex);
+                    break;
+                    
+                case 'rgb':
+                    const rgb = hexToRgb(currentColor);
+                    container.innerHTML = `
+                        <div class="color-inputs">
+                            <div class="form-group">
+                                <label>Red:</label>
+                                <input type="number" id="redInput" min="0" max="255" value="${rgb.r}">
+                            </div>
+                            <div class="form-group">
+                                <label>Green:</label>
+                                <input type="number" id="greenInput" min="0" max="255" value="${rgb.g}">
+                            </div>
+                            <div class="form-group">
+                                <label>Blue:</label>
+                                <input type="number" id="blueInput" min="0" max="255" value="${rgb.b}">
+                            </div>
+                        </div>
+                    `;
+                    ['redInput', 'greenInput', 'blueInput'].forEach(id => {
+                        document.getElementById(id).addEventListener('input', updateColorFromRgb);
+                    });
+                    break;
+                    
+                case 'name':
+                    container.innerHTML = `
+                        <div class="form-group">
+                            <label>Color Name:</label>
+                            <input type="text" id="nameInput" placeholder="coral, turquoise, gold, etc." list="colorNames">
+                            <datalist id="colorNames">
+                                ${Object.keys(namedColors).map(name => `<option value="${name}">`).join('')}
+                            </datalist>
+                        </div>
+                    `;
+                    document.getElementById('nameInput').addEventListener('input', updateColorFromName);
+                    break;
+            }
+        }
+
+        function updateColorFromPicker() {
+            currentColor = document.getElementById('colorPicker').value;
+            updatePreview();
+            updateColorCodes();
+        }
+
+        function updateColorFromHex() {
+            const hexInput = document.getElementById('hexInput');
+            let hex = hexInput.value.toUpperCase();
+            
+            // Ensure it starts with #
+            if (!hex.startsWith('#')) {
+                hex = '#' + hex;
+            }
+            
+            // Update input to show uppercase
+            hexInput.value = hex;
+            
+            if (isValidHex(hex)) {
+                currentColor = hex;
+                updatePreview();
+                updateColorCodes();
+            }
+        }
+
+        function updateColorFromRgb() {
+            const r = parseInt(document.getElementById('redInput').value) || 0;
+            const g = parseInt(document.getElementById('greenInput').value) || 0;
+            const b = parseInt(document.getElementById('blueInput').value) || 0;
+            
+            currentColor = rgbToHex(r, g, b);
+            updatePreview();
+            updateColorCodes();
+        }
+
+        function updateColorFromName() {
+            const name = document.getElementById('nameInput').value.toLowerCase();
+            if (namedColors[name]) {
+                currentColor = namedColors[name];
+                updatePreview();
+                updateColorCodes();
+            }
+        }
+
+        function updatePreview() {
+            const previewBox = document.getElementById('previewBox');
+            const previewContainer = document.getElementById('previewContainer');
+            
+            previewBox.style.backgroundColor = currentColor;
+            
+            // Update aspect ratio of preview container
+            const ratio = document.getElementById('aspectRatio').value;
+            if (ratio !== 'custom') {
+                const [w, h] = ratio.split(':').map(Number);
+                const aspectRatio = w / h;
+                
+                // Calculate height based on container width and aspect ratio
+                const containerWidth = previewContainer.offsetWidth;
+                const newHeight = containerWidth / aspectRatio;
+                
+                // Limit maximum height to 400px
+                const finalHeight = Math.min(newHeight, 400);
+                previewContainer.style.height = `${finalHeight}px`;
+            } else {
+                previewContainer.style.height = '300px';
+            }
+        }
+
+        function updateColorCodes() {
+            const rgb = hexToRgb(currentColor);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            
+            document.getElementById('hexCode').textContent = currentColor.toUpperCase();
+            document.getElementById('rgbCode').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            document.getElementById('hslCode').textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        }
+
+        function updateFromWidth() {
+            const ratio = document.getElementById('aspectRatio').value;
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            
+            if (ratio !== 'custom') {
+                const [w, h] = ratio.split(':').map(Number);
+                const newHeight = Math.round((parseInt(widthInput.value) * h) / w);
+                heightInput.value = newHeight;
+            }
+            updateSizeInfo();
+        }
+
+        function updateFromHeight() {
+            const ratio = document.getElementById('aspectRatio').value;
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            
+            if (ratio !== 'custom') {
+                const [w, h] = ratio.split(':').map(Number);
+                const newWidth = Math.round((parseInt(heightInput.value) * w) / h);
+                widthInput.value = newWidth;
+            }
+            updateSizeInfo();
+        }
+
+        function updateSizeInfo() {
+            const width = document.getElementById('width').value;
+            const height = document.getElementById('height').value;
+            document.getElementById('sizeInfo').textContent = `${width} x ${height} px`;
+        }
+
+        function updateDimensions() {
+            const ratio = document.getElementById('aspectRatio').value;
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            
+            if (ratio !== 'custom') {
+                const [w, h] = ratio.split(':').map(Number);
+                const currentWidth = parseInt(widthInput.value) || 1920;
+                const newHeight = Math.round((currentWidth * h) / w);
+                
+                heightInput.value = newHeight;
+                updateSizeInfo();
+            }
+        }
+
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            currentColor = color;
+            updatePreview();
+            updateColorCodes();
+            
+            // Update input sesuai method yang dipilih
+            const method = document.getElementById('colorMethod').value;
+            if (method === 'picker' && document.getElementById('colorPicker')) {
+                document.getElementById('colorPicker').value = color;
+            }
+        }
+
+        function exportImage() {
+            const canvas = document.getElementById('exportCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = parseInt(document.getElementById('width').value);
+            const height = parseInt(document.getElementById('height').value);
+            const format = document.getElementById('fileFormat').value;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Fill dengan warna yang dipilih
+            ctx.fillStyle = currentColor;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Convert ke format yang dipilih dan download
+            const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
+            const quality = format === 'jpg' ? 0.9 : undefined;
+            
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `background-${currentColor.substring(1)}-${width}x${height}.${format}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, mimeType, quality);
+        }
+
+        // Utility functions
+        function isValidHex(hex) {
+            return /^#[0-9A-F]{6}$/i.test(hex);
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
+        }
+
+        // Initialize
+        updatePreview();
+        updateColorCodes();
+        updateSizeInfo();
+    </script>
+</body>
+</html>
