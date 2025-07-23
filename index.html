@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Background Color Generator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -98,24 +100,6 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
-        }
-
-        .color-picker-group {
-            grid-column: span 2;
-        }
-
-        .color-picker-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        input[type="color"] {
-            width: 60px;
-            height: 50px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
         }
 
         .preset-colors {
@@ -236,10 +220,6 @@
                 grid-template-columns: 1fr;
             }
             
-            .color-picker-group {
-                grid-column: span 1;
-            }
-            
             h1 {
                 font-size: 2rem;
             }
@@ -293,12 +273,7 @@
                 </div>
 
                 <div id="colorInputs">
-                    <div class="color-picker-group">
-                        <div class="color-picker-wrapper">
-                            <input type="color" id="colorPicker" value="#667eea">
-                            <label for="colorPicker">Select Color</label>
-                        </div>
-                    </div>
+                    <!-- Color inputs will be dynamically generated here -->
                 </div>
 
                 <div class="form-group">
@@ -412,48 +387,70 @@
     <script>
         let currentColor = '#667eea';
 
-        // Preset warna dengan nama
         const namedColors = {
-            'coral': '#ff7f50',
-            'turquoise': '#40e0d0',
-            'gold': '#ffd700',
-            'salmon': '#fa8072',
-            'khaki': '#f0e68c',
-            'plum': '#dda0dd',
-            'orange': '#ffa500',
-            'lime': '#00ff00',
-            'navy': '#000080',
-            'maroon': '#800000',
-            'olive': '#808000',
-            'purple': '#800080',
-            'teal': '#008080',
-            'silver': '#c0c0c0',
-            'gray': '#808080',
-            'red': '#ff0000',
-            'green': '#008000',
-            'blue': '#0000ff',
-            'yellow': '#ffff00',
-            'cyan': '#00ffff',
-            'magenta': '#ff00ff',
-            'white': '#ffffff',
-            'black': '#000000'
+            'coral': '#ff7f50', 'turquoise': '#40e0d0', 'gold': '#ffd700', 'salmon': '#fa8072',
+            'khaki': '#f0e68c', 'plum': '#dda0dd', 'orange': '#ffa500', 'lime': '#00ff00',
+            'navy': '#000080', 'maroon': '#800000', 'olive': '#808000', 'purple': '#800080',
+            'teal': '#008080', 'silver': '#c0c0c0', 'gray': '#808080', 'red': '#ff0000',
+            'green': '#008000', 'blue': '#0000ff', 'yellow': '#ffff00', 'cyan': '#00ffff',
+            'magenta': '#ff00ff', 'white': '#ffffff', 'black': '#000000'
         };
 
         // Event listeners
         document.getElementById('colorMethod').addEventListener('change', updateColorInputs);
-        document.getElementById('colorPicker').addEventListener('input', updateColorFromPicker);
         document.getElementById('width').addEventListener('input', updateFromWidth);
         document.getElementById('height').addEventListener('input', updateFromHeight);
 
-        // Preset color listeners
         document.querySelectorAll('.preset-color').forEach(color => {
             color.addEventListener('click', function() {
-                currentColor = this.dataset.color;
-                updatePreview();
-                updateColorCodes();
-                document.getElementById('colorPicker').value = currentColor;
+                updateColor(this.dataset.color);
             });
         });
+
+        function updateColor(newColor, fromInput = false) {
+            currentColor = newColor;
+            updatePreview();
+            updateColorCodes();
+
+            const swatch = document.getElementById('colorSwatch');
+            if (swatch) {
+                swatch.style.backgroundColor = newColor;
+            }
+
+            // Update the value of the active input field
+            const method = document.getElementById('colorMethod').value;
+            if (!fromInput) {
+                switch(method) {
+                    case 'picker':
+                        const pickerInput = document.getElementById('colorPicker');
+                        if (pickerInput) {
+                            pickerInput.value = newColor;
+                            // Manually trigger Coloris to update the swatch
+                            pickerInput.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                        break;
+                    case 'hex':
+                        const hexInput = document.getElementById('hexInput');
+                        if (hexInput) hexInput.value = newColor.toUpperCase();
+                        break;
+                    case 'rgb':
+                        const rgb = hexToRgb(newColor);
+                        if (rgb) {
+                            document.getElementById('redInput').value = rgb.r;
+                            document.getElementById('greenInput').value = rgb.g;
+                            document.getElementById('blueInput').value = rgb.b;
+                        }
+                        break;
+                    case 'name':
+                        const nameInput = document.getElementById('nameInput');
+                        if (nameInput) {
+                            const name = Object.keys(namedColors).find(key => namedColors[key] === newColor);
+                            nameInput.value = name || '';
+                        }
+                        break;
+                }
+            }
+        }
 
         function updateColorInputs() {
             const method = document.getElementById('colorMethod').value;
@@ -462,14 +459,15 @@
             switch(method) {
                 case 'picker':
                     container.innerHTML = `
-                        <div class="color-picker-group">
-                            <div class="color-picker-wrapper">
-                                <input type="color" id="colorPicker" value="${currentColor}">
-                                <label for="colorPicker">Pilih Warna</label>
+                        <div class="form-group">
+                            <label>Select Color:</label>
+                            <div style="display: flex; align-items: center; gap: 10px; height: 45px;">
+                                <span id="colorSwatch" style="width: 45px; height: 100%; background-color: ${currentColor}; border-radius: 8px; border: 2px solid #e1e5e9;"></span>
+                                <input type="text" id="colorPicker" value="${currentColor}" data-coloris style="flex-grow: 1; height: 100%;">
                             </div>
                         </div>
                     `;
-                    document.getElementById('colorPicker').addEventListener('input', updateColorFromPicker);
+                    Coloris.init();
                     break;
                     
                 case 'hex':
@@ -520,28 +518,15 @@
             }
         }
 
-        function updateColorFromPicker() {
-            currentColor = document.getElementById('colorPicker').value;
-            updatePreview();
-            updateColorCodes();
-        }
-
         function updateColorFromHex() {
             const hexInput = document.getElementById('hexInput');
             let hex = hexInput.value.toUpperCase();
-            
-            // Ensure it starts with #
             if (!hex.startsWith('#')) {
                 hex = '#' + hex;
             }
-            
-            // Update input to show uppercase
             hexInput.value = hex;
-            
             if (isValidHex(hex)) {
-                currentColor = hex;
-                updatePreview();
-                updateColorCodes();
+                updateColor(hex, true);
             }
         }
 
@@ -549,38 +534,27 @@
             const r = parseInt(document.getElementById('redInput').value) || 0;
             const g = parseInt(document.getElementById('greenInput').value) || 0;
             const b = parseInt(document.getElementById('blueInput').value) || 0;
-            
-            currentColor = rgbToHex(r, g, b);
-            updatePreview();
-            updateColorCodes();
+            updateColor(rgbToHex(r, g, b), true);
         }
 
         function updateColorFromName() {
             const name = document.getElementById('nameInput').value.toLowerCase();
             if (namedColors[name]) {
-                currentColor = namedColors[name];
-                updatePreview();
-                updateColorCodes();
+                updateColor(namedColors[name], true);
             }
         }
 
         function updatePreview() {
             const previewBox = document.getElementById('previewBox');
             const previewContainer = document.getElementById('previewContainer');
-            
             previewBox.style.backgroundColor = currentColor;
             
-            // Update aspect ratio of preview container
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
                 const [w, h] = ratio.split(':').map(Number);
                 const aspectRatio = w / h;
-                
-                // Calculate height based on container width and aspect ratio
                 const containerWidth = previewContainer.offsetWidth;
                 const newHeight = containerWidth / aspectRatio;
-                
-                // Limit maximum height to 400px
                 const finalHeight = Math.min(newHeight, 400);
                 previewContainer.style.height = `${finalHeight}px`;
             } else {
@@ -591,7 +565,6 @@
         function updateColorCodes() {
             const rgb = hexToRgb(currentColor);
             const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-            
             document.getElementById('hexCode').textContent = currentColor.toUpperCase();
             document.getElementById('rgbCode').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
             document.getElementById('hslCode').textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
@@ -599,26 +572,20 @@
 
         function updateFromWidth() {
             const ratio = document.getElementById('aspectRatio').value;
-            const widthInput = document.getElementById('width');
-            const heightInput = document.getElementById('height');
-            
             if (ratio !== 'custom') {
                 const [w, h] = ratio.split(':').map(Number);
-                const newHeight = Math.round((parseInt(widthInput.value) * h) / w);
-                heightInput.value = newHeight;
+                const widthInput = document.getElementById('width');
+                document.getElementById('height').value = Math.round((parseInt(widthInput.value) * h) / w);
             }
             updateSizeInfo();
         }
 
         function updateFromHeight() {
             const ratio = document.getElementById('aspectRatio').value;
-            const widthInput = document.getElementById('width');
-            const heightInput = document.getElementById('height');
-            
             if (ratio !== 'custom') {
                 const [w, h] = ratio.split(':').map(Number);
-                const newWidth = Math.round((parseInt(heightInput.value) * w) / h);
-                widthInput.value = newWidth;
+                const heightInput = document.getElementById('height');
+                document.getElementById('width').value = Math.round((parseInt(heightInput.value) * w) / h);
             }
             updateSizeInfo();
         }
@@ -631,15 +598,10 @@
 
         function updateDimensions() {
             const ratio = document.getElementById('aspectRatio').value;
-            const widthInput = document.getElementById('width');
-            const heightInput = document.getElementById('height');
-            
             if (ratio !== 'custom') {
+                const widthInput = document.getElementById('width');
                 const [w, h] = ratio.split(':').map(Number);
-                const currentWidth = parseInt(widthInput.value) || 1920;
-                const newHeight = Math.round((currentWidth * h) / w);
-                
-                heightInput.value = newHeight;
+                document.getElementById('height').value = Math.round((parseInt(widthInput.value) * h) / w);
                 updateSizeInfo();
             }
         }
@@ -650,15 +612,7 @@
             for (let i = 0; i < 6; i++) {
                 color += letters[Math.floor(Math.random() * 16)];
             }
-            currentColor = color;
-            updatePreview();
-            updateColorCodes();
-            
-            // Update input sesuai method yang dipilih
-            const method = document.getElementById('colorMethod').value;
-            if (method === 'picker' && document.getElementById('colorPicker')) {
-                document.getElementById('colorPicker').value = color;
-            }
+            updateColor(color);
         }
 
         function exportImage() {
@@ -670,12 +624,9 @@
             
             canvas.width = width;
             canvas.height = height;
-            
-            // Fill dengan warna yang dipilih
             ctx.fillStyle = currentColor;
             ctx.fillRect(0, 0, width, height);
             
-            // Convert ke format yang dipilih dan download
             const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
             const quality = format === 'jpg' ? 0.9 : undefined;
             
@@ -692,31 +643,17 @@
         }
 
         // Utility functions
-        function isValidHex(hex) {
-            return /^#[0-9A-F]{6}$/i.test(hex);
-        }
-
+        function isValidHex(hex) { return /^#[0-9A-F]{6}$/i.test(hex); }
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : null;
+            return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
         }
-
-        function rgbToHex(r, g, b) {
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-        }
-
+        function rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
         function rgbToHsl(r, g, b) {
             r /= 255; g /= 255; b /= 255;
             const max = Math.max(r, g, b), min = Math.min(r, g, b);
             let h, s, l = (max + min) / 2;
-
-            if (max === min) {
-                h = s = 0;
-            } else {
+            if (max === min) { h = s = 0; } else {
                 const d = max - min;
                 s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
                 switch (max) {
@@ -726,18 +663,31 @@
                 }
                 h /= 6;
             }
-
-            return {
-                h: Math.round(h * 360),
-                s: Math.round(s * 100),
-                l: Math.round(l * 100)
-            };
+            return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
         }
 
-        // Initialize
-        updatePreview();
-        updateColorCodes();
-        updateSizeInfo();
+        // Initialize Coloris
+        Coloris({
+            themeMode: 'light',
+            alpha: false,
+            format: 'hex',
+            swatches: [
+                '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57',
+                '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff6348'
+            ]
+        });
+
+        document.addEventListener('coloris:pick', event => {
+            updateColor(event.detail.color, true);
+        });
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            updateColorInputs();
+            updatePreview();
+            updateColorCodes();
+            updateSizeInfo();
+        });
     </script>
 </body>
 </html>
