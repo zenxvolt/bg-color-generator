@@ -235,6 +235,10 @@
             visibility: visible;
             opacity: 1;
         }
+
+        #gradientControls .clr-picker {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -244,21 +248,53 @@
         <div class="main-content">
             <div class="controls">
                 <h2 class="section-title">Color Settings</h2>
-                
+
                 <div class="form-group">
-                    <label>Color Input Method:</label>
-                    <select id="colorMethod">
-                        <option value="picker">Color Picker</option>
-                        <option value="hex">Hex Code</option>
-                        <option value="rgb">RGB</option>
-                        <option value="name">Color Name</option>
+                    <label>Background Type:</label>
+                    <select id="backgroundType">
+                        <option value="solid">Solid Color</option>
+                        <option value="gradient">Gradient</option>
                     </select>
                 </div>
 
-                <div id="colorInputs">
-                    <!-- Color inputs will be dynamically generated here -->
+                <div id="solidControls">
+                    <div class="form-group">
+                        <label>Color Input Method:</label>
+                        <select id="colorMethod">
+                            <option value="picker">Color Picker</option>
+                            <option value="hex">Hex Code</option>
+                            <option value="rgb">RGB</option>
+                            <option value="name">Color Name</option>
+                        </select>
+                    </div>
+
+                    <div id="colorInputs">
+                        <!-- Color inputs will be dynamically generated here -->
+                    </div>
                 </div>
 
+                <div id="gradientControls" style="display: none;">
+                    <div class="form-group">
+                        <label>Color 1:</label>
+                        <input type="text" id="gradientColor1" value="#667eea" data-coloris>
+                    </div>
+                    <div class="form-group">
+                        <label>Color 2:</label>
+                        <input type="text" id="gradientColor2" value="#764ba2" data-coloris>
+                    </div>
+                    <div class="form-group">
+                        <label>Direction (Angle):</label>
+                        <input type="range" id="gradientDirection" min="0" max="360" value="90">
+                    </div>
+                    <div class="form-group">
+                        <label>Gradient Type:</label>
+                        <select id="gradientType">
+                            <option value="linear">Linear</option>
+                            <option value="radial">Radial</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label>Preset Colors:</label>
                     <div class="preset-colors">
@@ -307,7 +343,7 @@
 
                 <div class="color-info">
                     <h3 style="margin-bottom: 10px; color: #333;">Color Information:</h3>
-                    <div class="color-codes">
+                    <div class="color-codes" id="colorCodesContainer">
                         <div class="color-code">
                             <strong>HEX:</strong> <span id="hexCode">#667eea</span>
                         </div>
@@ -371,6 +407,12 @@
 
     <script>
         let currentColor = '#667eea';
+        let gradient = {
+            color1: '#667eea',
+            color2: '#764ba2',
+            direction: 90,
+            type: 'linear'
+        };
 
         const namedColors = {
             'coral': '#ff7f50', 'turquoise': '#40e0d0', 'gold': '#ffd700', 'salmon': '#fa8072',
@@ -382,15 +424,46 @@
         };
 
         // Event listeners
+        document.getElementById('backgroundType').addEventListener('change', updateBackgroundMode);
         document.getElementById('colorMethod').addEventListener('change', updateColorInputs);
         document.getElementById('width').addEventListener('input', updateFromWidth);
         document.getElementById('height').addEventListener('input', updateFromHeight);
+
+        document.getElementById('gradientColor1').addEventListener('input', updateGradient);
+        document.getElementById('gradientColor2').addEventListener('input', updateGradient);
+        document.getElementById('gradientDirection').addEventListener('input', updateGradient);
+        document.getElementById('gradientType').addEventListener('change', updateGradient);
 
         document.querySelectorAll('.preset-color').forEach(color => {
             color.addEventListener('click', function() {
                 updateColor(this.dataset.color);
             });
         });
+
+        function updateBackgroundMode() {
+            const mode = document.getElementById('backgroundType').value;
+            const solidControls = document.getElementById('solidControls');
+            const gradientControls = document.getElementById('gradientControls');
+
+            if (mode === 'solid') {
+                solidControls.style.display = 'block';
+                gradientControls.style.display = 'none';
+            } else {
+                solidControls.style.display = 'none';
+                gradientControls.style.display = 'block';
+            }
+            updatePreview();
+            updateColorCodes();
+        }
+
+        function updateGradient() {
+            gradient.color1 = document.getElementById('gradientColor1').value;
+            gradient.color2 = document.getElementById('gradientColor2').value;
+            gradient.direction = document.getElementById('gradientDirection').value;
+            gradient.type = document.getElementById('gradientType').value;
+            updatePreview();
+            updateColorCodes();
+        }
 
         function updateColor(newColor, fromInput = false) {
             currentColor = newColor;
@@ -532,7 +605,17 @@
         function updatePreview() {
             const previewBox = document.getElementById('previewBox');
             const previewContainer = document.getElementById('previewContainer');
-            previewBox.style.backgroundColor = currentColor;
+            const mode = document.getElementById('backgroundType').value;
+
+            if (mode === 'solid') {
+                previewBox.style.background = currentColor;
+            } else {
+                if (gradient.type === 'linear') {
+                    previewBox.style.background = `linear-gradient(${gradient.direction}deg, ${gradient.color1}, ${gradient.color2})`;
+                } else {
+                    previewBox.style.background = `radial-gradient(circle, ${gradient.color1}, ${gradient.color2})`;
+                }
+            }
             
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
@@ -548,11 +631,43 @@
         }
 
         function updateColorCodes() {
-            const rgb = hexToRgb(currentColor);
-            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-            document.getElementById('hexCode').textContent = currentColor.toUpperCase();
-            document.getElementById('rgbCode').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-            document.getElementById('hslCode').textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+            const container = document.getElementById('colorCodesContainer');
+            const mode = document.getElementById('backgroundType').value;
+
+            if (mode === 'solid') {
+                const rgb = hexToRgb(currentColor);
+                const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+                container.innerHTML = `
+                    <div class="color-code">
+                        <strong>HEX:</strong> <span id="hexCode">${currentColor.toUpperCase()}</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>RGB:</strong> <span id="rgbCode">rgb(${rgb.r}, ${rgb.g}, ${rgb.b})</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>HSL:</strong> <span id="hslCode">hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>Size:</strong> <span id="sizeInfo">${document.getElementById('width').value} x ${document.getElementById('height').value} px</span>
+                    </div>
+                `;
+            } else {
+                let cssCode;
+                if (gradient.type === 'linear') {
+                    cssCode = `linear-gradient(${gradient.direction}deg, ${gradient.color1}, ${gradient.color2});`;
+                } else {
+                    cssCode = `radial-gradient(circle, ${gradient.color1}, ${gradient.color2});`;
+                }
+                container.innerHTML = `
+                    <div class="color-code" style="grid-column: 1 / -1;">
+                        <strong>CSS:</strong> <span id="cssCode" style="word-break: break-all;">${cssCode}</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>Size:</strong> <span id="sizeInfo">${document.getElementById('width').value} x ${document.getElementById('height').value} px</span>
+                    </div>
+                `;
+            }
+            updateSizeInfo();
         }
 
         function updateFromWidth() {
@@ -578,7 +693,10 @@
         function updateSizeInfo() {
             const width = document.getElementById('width').value;
             const height = document.getElementById('height').value;
-            document.getElementById('sizeInfo').textContent = `${width} x ${height} px`;
+            const sizeInfo = document.getElementById('sizeInfo');
+            if(sizeInfo) {
+                sizeInfo.textContent = `${width} x ${height} px`;
+            }
         }
 
         function updateDimensions() {
@@ -587,17 +705,31 @@
                 const widthInput = document.getElementById('width');
                 const [w, h] = ratio.split(':').map(Number);
                 document.getElementById('height').value = Math.round((parseInt(widthInput.value) * h) / w);
-                updateSizeInfo();
             }
+            updatePreview();
+            updateSizeInfo();
         }
 
         function generateRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
+            const mode = document.getElementById('backgroundType').value;
+            
+            const randomHex = () => {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            };
+
+            if (mode === 'solid') {
+                updateColor(randomHex());
+            } else {
+                document.getElementById('gradientColor1').value = randomHex();
+                document.getElementById('gradientColor2').value = randomHex();
+                document.getElementById('gradientColor1').dispatchEvent(new Event('input', { bubbles: true }));
+                document.getElementById('gradientColor2').dispatchEvent(new Event('input', { bubbles: true }));
             }
-            updateColor(color);
         }
 
         function exportImage() {
@@ -606,11 +738,33 @@
             const width = parseInt(document.getElementById('width').value);
             const height = parseInt(document.getElementById('height').value);
             const format = document.getElementById('fileFormat').value;
+            const mode = document.getElementById('backgroundType').value;
             
             canvas.width = width;
             canvas.height = height;
-            ctx.fillStyle = currentColor;
-            ctx.fillRect(0, 0, width, height);
+
+            if (mode === 'solid') {
+                ctx.fillStyle = currentColor;
+                ctx.fillRect(0, 0, width, height);
+            } else {
+                if (gradient.type === 'linear') {
+                    const angle = gradient.direction * Math.PI / 180;
+                    const x0 = width / 2 + Math.cos(angle) * width / 2;
+                    const y0 = height / 2 + Math.sin(angle) * height / 2;
+                    const x1 = width / 2 - Math.cos(angle) * width / 2;
+                    const y1 = height / 2 - Math.sin(angle) * height / 2;
+                    const grad = ctx.createLinearGradient(x1, y1, x0, y0);
+                    grad.addColorStop(0, gradient.color1);
+                    grad.addColorStop(1, gradient.color2);
+                    ctx.fillStyle = grad;
+                } else { // radial
+                    const grad = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width, height)/2);
+                    grad.addColorStop(0, gradient.color1);
+                    grad.addColorStop(1, gradient.color2);
+                    ctx.fillStyle = grad;
+                }
+                ctx.fillRect(0, 0, width, height);
+            }
             
             const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
             const quality = format === 'jpg' ? 0.9 : undefined;
@@ -619,7 +773,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `background-${currentColor.substring(1)}-${width}x${height}.${format}`;
+                a.download = `background-${width}x${height}.${format}`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -652,18 +806,13 @@
         }
 
         // Initialize Coloris
-        Coloris({
-            themeMode: 'light',
-            alpha: false,
-            format: 'hex',
-            swatches: [
-                '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57',
-                '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff6348'
-            ]
-        });
-
         document.addEventListener('coloris:pick', event => {
-            updateColor(event.detail.color, true);
+            const target = event.detail.target;
+            if (target.id.startsWith('gradient')) {
+                target.dispatchEvent(new Event('input', { bubbles: true }));
+            } else {
+                updateColor(event.detail.color, true);
+            }
         });
 
         // Initial setup
@@ -672,6 +821,19 @@
             updatePreview();
             updateColorCodes();
             updateSizeInfo();
+            updateBackgroundMode();
+            
+            Coloris({
+                el: '#gradientColor1, #gradientColor2',
+                parent: '#gradientControls',
+                themeMode: 'light',
+                alpha: false,
+                format: 'hex',
+                swatches: [
+                    '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57',
+                    '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff6348'
+                ]
+            });
         });
     </script>
 </body>
