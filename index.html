@@ -21,7 +21,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -43,19 +43,12 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 30px;
             align-items: start;
         }
 
-        .controls {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .preview-section {
+        .controls, .preview-section, .export-settings {
             background: white;
             padding: 25px;
             border-radius: 15px;
@@ -212,10 +205,6 @@
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
             h1 {
                 font-size: 2rem;
             }
@@ -308,7 +297,36 @@
                     </div>
                     <button class="random-btn" onclick="generateRandomColor()">Random Color</button>
                 </div>
+            </div>
 
+            <div class="preview-section">
+                <h2 class="section-title">Preview</h2>
+                
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-box" id="previewBox">
+                    </div>
+                </div>
+
+                <div class="color-info">
+                    <h3 style="margin-bottom: 10px; color: #333;">Color Information:</h3>
+                    <div class="color-codes">
+                        <div class="color-code">
+                            <strong>HEX:</strong> <span id="hexCode">#667eea</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>RGB:</strong> <span id="rgbCode">rgb(102, 126, 234)</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>HSL:</strong> <span id="hslCode">hsl(228, 77%, 66%)</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>Size:</strong> <span id="sizeInfo">1920 x 1080 px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="export-settings">
                 <h2 class="section-title">Export Settings</h2>
                 
                 <div class="form-group">
@@ -347,33 +365,6 @@
                 <button class="export-btn" onclick="exportImage()">
                     Export Image
                 </button>
-            </div>
-
-            <div class="preview-section">
-                <h2 class="section-title">Preview</h2>
-                
-                <div class="preview-container" id="previewContainer">
-                    <div class="preview-box" id="previewBox">
-                    </div>
-                </div>
-
-                <div class="color-info">
-                    <h3 style="margin-bottom: 10px; color: #333;">Color Information:</h3>
-                    <div class="color-codes">
-                        <div class="color-code">
-                            <strong>HEX:</strong> <span id="hexCode">#667eea</span>
-                        </div>
-                        <div class="color-code">
-                            <strong>RGB:</strong> <span id="rgbCode">rgb(102, 126, 234)</span>
-                        </div>
-                        <div class="color-code">
-                            <strong>HSL:</strong> <span id="hslCode">hsl(228, 77%, 66%)</span>
-                        </div>
-                        <div class="color-code">
-                            <strong>Size:</strong> <span id="sizeInfo">1920 x 1080 px</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
