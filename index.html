@@ -775,7 +775,15 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `background-${width}x${height}.${format}`;
+                
+                let colorPart;
+                if (mode === 'solid') {
+                    colorPart = currentColor.substring(1);
+                } else {
+                    colorPart = `${gradient.color1.substring(1)}_${gradient.color2.substring(1)}`;
+                }
+
+                a.download = `bg-${colorPart}-${width}x${height}.${format}`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
