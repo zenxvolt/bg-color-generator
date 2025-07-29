@@ -1,5 +1,5 @@
 {
-  "name": "Background Color Generator",
+  "name": "BG Color",
   "short_name": "BG Generator",
   "start_url": ".",
   "display": "standalone",
@@ -8,8 +8,8 @@
   "description": "A simple background color generator.",
   "icons": [
     {
-      "src": "images/icon-192x192.png",
-      "sizes": "192x192",
+      "src": "images/icon-256x256.png",
+      "sizes": "256x256",
       "type": "image/png"
     },
     {
