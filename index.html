@@ -48,7 +48,7 @@
             align-items: start;
         }
 
-        .controls, .preview-section, .export-settings, .api-docs {
+        .controls, .preview-section, .export-settings {
             background: white;
             padding: 25px;
             border-radius: 15px;
@@ -161,31 +161,6 @@
             font-size: 12px;
             border: 1px solid #ddd;
         }
-        
-        .api-section p {
-            margin-top: 5px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .api-section code {
-            display: block;
-            background: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            word-break: break-all;
-            font-family: monospace;
-        }
-        
-        .api-section a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        
-        .api-section a:hover {
-            text-decoration: underline;
-        }
 
         .export-btn {
             width: 100%;
@@ -294,8 +269,10 @@
                             <option value="name">Color Name</option>
                         </select>
                     </div>
+
                     <div id="colorInputs">
-                        </div>
+                        <!-- Color inputs will be dynamically generated here -->
+                    </div>
                 </div>
 
                 <div id="gradientControls" style="display: none;">
@@ -323,16 +300,36 @@
                 <div class="form-group">
                     <label>Preset Colors:</label>
                     <div class="preset-colors">
-                        <div class="preset-color tooltip" style="background: #ff6b6b" data-color="#ff6b6b"><span class="tooltiptext">Red</span></div>
-                        <div class="preset-color tooltip" style="background: #4ecdc4" data-color="#4ecdc4"><span class="tooltiptext">Teal</span></div>
-                        <div class="preset-color tooltip" style="background: #45b7d1" data-color="#45b7d1"><span class="tooltiptext">Blue</span></div>
-                        <div class="preset-color tooltip" style="background: #96ceb4" data-color="#96ceb4"><span class="tooltiptext">Green</span></div>
-                        <div class="preset-color tooltip" style="background: #feca57" data-color="#feca57"><span class="tooltiptext">Yellow</span></div>
-                        <div class="preset-color tooltip" style="background: #ff9ff3" data-color="#ff9ff3"><span class="tooltiptext">Pink</span></div>
-                        <div class="preset-color tooltip" style="background: #54a0ff" data-color="#54a0ff"><span class="tooltiptext">Light Blue</span></div>
-                        <div class="preset-color tooltip" style="background: #5f27cd" data-color="#5f27cd"><span class="tooltiptext">Purple</span></div>
-                        <div class="preset-color tooltip" style="background: #00d2d3" data-color="#00d2d3"><span class="tooltiptext">Cyan</span></div>
-                        <div class="preset-color tooltip" style="background: #ff6348" data-color="#ff6348"><span class="tooltiptext">Orange</span></div>
+                        <div class="preset-color tooltip" style="background: #ff6b6b" data-color="#ff6b6b">
+                            <span class="tooltiptext">Red</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #4ecdc4" data-color="#4ecdc4">
+                            <span class="tooltiptext">Teal</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #45b7d1" data-color="#45b7d1">
+                            <span class="tooltiptext">Blue</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #96ceb4" data-color="#96ceb4">
+                            <span class="tooltiptext">Green</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #feca57" data-color="#feca57">
+                            <span class="tooltiptext">Yellow</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #ff9ff3" data-color="#ff9ff3">
+                            <span class="tooltiptext">Pink</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #54a0ff" data-color="#54a0ff">
+                            <span class="tooltiptext">Light Blue</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #5f27cd" data-color="#5f27cd">
+                            <span class="tooltiptext">Purple</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #00d2d3" data-color="#00d2d3">
+                            <span class="tooltiptext">Cyan</span>
+                        </div>
+                        <div class="preset-color tooltip" style="background: #ff6348" data-color="#ff6348">
+                            <span class="tooltiptext">Orange</span>
+                        </div>
                     </div>
                     <button class="random-btn" onclick="generateRandomColor()">Random Color</button>
                 </div>
@@ -340,18 +337,34 @@
 
             <div class="preview-section">
                 <h2 class="section-title">Preview</h2>
+                
                 <div class="preview-container" id="previewContainer">
-                    <div class="preview-box" id="previewBox"></div>
+                    <div class="preview-box" id="previewBox">
+                    </div>
                 </div>
+
                 <div class="color-info">
                     <h3 style="margin-bottom: 10px; color: #333;">Color Information:</h3>
                     <div class="color-codes" id="colorCodesContainer">
+                        <div class="color-code">
+                            <strong>HEX:</strong> <span id="hexCode">#667eea</span>
                         </div>
+                        <div class="color-code">
+                            <strong>RGB:</strong> <span id="rgbCode">rgb(102, 126, 234)</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>HSL:</strong> <span id="hslCode">hsl(228, 77%, 66%)</span>
+                        </div>
+                        <div class="color-code">
+                            <strong>Size:</strong> <span id="sizeInfo">1920 x 1080 px</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="export-settings">
                 <h2 class="section-title">Export Settings</h2>
+                
                 <div class="form-group">
                     <label>Aspect Ratio:</label>
                     <select id="aspectRatio" onchange="updateDimensions()">
@@ -364,6 +377,7 @@
                         <option value="21:9">21:9 (Ultrawide)</option>
                     </select>
                 </div>
+
                 <div class="dimension-inputs">
                     <div class="form-group">
                         <label>Width (px):</label>
@@ -374,6 +388,7 @@
                         <input type="number" id="height" value="1080" min="1" max="4000">
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label>File Format:</label>
                     <select id="fileFormat">
@@ -382,26 +397,41 @@
                         <option value="webp">WebP</option>
                     </select>
                 </div>
-                <button class="export-btn" onclick="exportImage()">Export Image</button>
+
+                <button class="export-btn" onclick="exportImage()">
+                    Export Image
+                </button>
             </div>
 
             <div class="api-docs">
-                <h2 class="section-title">Image Generation Link</h2>
-                <p>You can generate and download images by crafting a URL with query parameters. Add <code>?download=true</code> to trigger the download.</p>
+                <h2 class="section-title">Image API</h2>
+                <p>You can generate images dynamically by crafting a URL. Here’s how:</p>
                 
                 <div class="api-section">
                     <h3>Solid Color</h3>
-                    <code>?type=solid&color=[hex]&width=[w]&height=[h]&download=true</code>
-                    <p><strong>Example:</strong> <a href="?type=solid&color=ff0000&width=1920&height=1080&download=true">Generate a red 1920x1080 image</a></p>
+                    <code>/solid-[color]-[width]x[height].[format]</code>
+                    <p><strong>Example:</strong> <a href="/solid-ff0000-1920x1080.png" target="_blank">/solid-ff0000-1920x1080.png</a></p>
+                    <ul>
+                        <li><code>[color]</code>: Hex color code (e.g., ff0000).</li>
+                        <li><code>[width]</code>: Image width in pixels.</li>
+                        <li><code>[height]</code>: Image height in pixels.</li>
+                        <li><code>[format]</code>: png, jpg, or webp.</li>
+                    </ul>
                 </div>
 
                 <div class="api-section">
                     <h3>Gradient</h3>
-                    <code>?type=gradient&color1=[hex1]&color2=[hex2]&angle=[a]&gradientType=[t]&width=[w]&height=[h]&download=true</code>
-                    <p><strong>Example:</strong> <a href="?type=gradient&color1=667eea&color2=764ba2&angle=90&gradientType=linear&width=1920&height=1080&download=true">Generate a gradient 1920x1080 image</a></p>
+                    <code>/gradient-[color1]-[color2]-[angle]-[type]-[width]x[height].[format]</code>
+                    <p><strong>Example:</strong> <a href="/gradient-667eea-764ba2-90-linear-1920x1080.png" target="_blank">/gradient-667eea-764ba2-90-linear-1920x1080.png</a></p>
+                    <ul>
+                        <li><code>[color1]</code>, <code>[color2]</code>: Hex color codes.</li>
+                        <li><code>[angle]</code>: Gradient angle (0-360).</li>
+                        <li><code>[type]</code>: 'linear' or 'radial'.</li>
+                        <li><code>[width]</code>, <code>[height]</code>: Image dimensions.</li>
+                        <li><code>[format]</code>: png, jpg, or webp.</li>
+                    </ul>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -415,6 +445,7 @@
             direction: 90,
             type: 'linear'
         };
+
         const namedColors = {
             'coral': '#ff7f50', 'turquoise': '#40e0d0', 'gold': '#ffd700', 'salmon': '#fa8072',
             'khaki': '#f0e68c', 'plum': '#dda0dd', 'orange': '#ffa500', 'lime': '#00ff00',
@@ -476,13 +507,15 @@
                 swatch.style.backgroundColor = newColor;
             }
 
+            // Update the value of the active input field
+            const method = document.getElementById('colorMethod').value;
             if (!fromInput) {
-                const method = document.getElementById('colorMethod').value;
                 switch(method) {
                     case 'picker':
                         const pickerInput = document.getElementById('colorPicker');
                         if (pickerInput) {
                             pickerInput.value = newColor;
+                            // Manually trigger Coloris to update the swatch
                             pickerInput.dispatchEvent(new Event('input', { bubbles: true }));
                         }
                         break;
@@ -526,6 +559,7 @@
                     `;
                     Coloris.init();
                     break;
+                    
                 case 'hex':
                     container.innerHTML = `
                         <div class="form-group">
@@ -535,25 +569,38 @@
                     `;
                     document.getElementById('hexInput').addEventListener('input', updateColorFromHex);
                     break;
+                    
                 case 'rgb':
                     const rgb = hexToRgb(currentColor);
                     container.innerHTML = `
                         <div class="color-inputs">
-                            <div class="form-group"><label>Red:</label><input type="number" id="redInput" min="0" max="255" value="${rgb.r}"></div>
-                            <div class="form-group"><label>Green:</label><input type="number" id="greenInput" min="0" max="255" value="${rgb.g}"></div>
-                            <div class="form-group"><label>Blue:</label><input type="number" id="blueInput" min="0" max="255" value="${rgb.b}"></div>
+                            <div class="form-group">
+                                <label>Red:</label>
+                                <input type="number" id="redInput" min="0" max="255" value="${rgb.r}">
+                            </div>
+                            <div class="form-group">
+                                <label>Green:</label>
+                                <input type="number" id="greenInput" min="0" max="255" value="${rgb.g}">
+                            </div>
+                            <div class="form-group">
+                                <label>Blue:</label>
+                                <input type="number" id="blueInput" min="0" max="255" value="${rgb.b}">
+                            </div>
                         </div>
                     `;
                     ['redInput', 'greenInput', 'blueInput'].forEach(id => {
                         document.getElementById(id).addEventListener('input', updateColorFromRgb);
                     });
                     break;
+                    
                 case 'name':
                     container.innerHTML = `
                         <div class="form-group">
                             <label>Color Name:</label>
                             <input type="text" id="nameInput" placeholder="coral, turquoise, gold, etc." list="colorNames">
-                            <datalist id="colorNames">${Object.keys(namedColors).map(name => `<option value="${name}">`).join('')}</datalist>
+                            <datalist id="colorNames">
+                                ${Object.keys(namedColors).map(name => `<option value="${name}">`).join('')}
+                            </datalist>
                         </div>
                     `;
                     document.getElementById('nameInput').addEventListener('input', updateColorFromName);
@@ -562,10 +609,15 @@
         }
 
         function updateColorFromHex() {
-            let hex = document.getElementById('hexInput').value.toUpperCase();
-            if (!hex.startsWith('#')) hex = '#' + hex;
-            document.getElementById('hexInput').value = hex;
-            if (isValidHex(hex)) updateColor(hex, true);
+            const hexInput = document.getElementById('hexInput');
+            let hex = hexInput.value.toUpperCase();
+            if (!hex.startsWith('#')) {
+                hex = '#' + hex;
+            }
+            hexInput.value = hex;
+            if (isValidHex(hex)) {
+                updateColor(hex, true);
+            }
         }
 
         function updateColorFromRgb() {
@@ -577,7 +629,9 @@
 
         function updateColorFromName() {
             const name = document.getElementById('nameInput').value.toLowerCase();
-            if (namedColors[name]) updateColor(namedColors[name], true);
+            if (namedColors[name]) {
+                updateColor(namedColors[name], true);
+            }
         }
 
         function updatePreview() {
@@ -616,18 +670,33 @@
                 const rgb = hexToRgb(currentColor);
                 const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
                 container.innerHTML = `
-                    <div class="color-code"><strong>HEX:</strong> <span id="hexCode">${currentColor.toUpperCase()}</span></div>
-                    <div class="color-code"><strong>RGB:</strong> <span id="rgbCode">rgb(${rgb.r}, ${rgb.g}, ${rgb.b})</span></div>
-                    <div class="color-code"><strong>HSL:</strong> <span id="hslCode">hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)</span></div>
-                    <div class="color-code"><strong>Size:</strong> <span id="sizeInfo">${document.getElementById('width').value} x ${document.getElementById('height').value} px</span></div>
+                    <div class="color-code">
+                        <strong>HEX:</strong> <span id="hexCode">${currentColor.toUpperCase()}</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>RGB:</strong> <span id="rgbCode">rgb(${rgb.r}, ${rgb.g}, ${rgb.b})</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>HSL:</strong> <span id="hslCode">hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>Size:</strong> <span id="sizeInfo">${document.getElementById('width').value} x ${document.getElementById('height').value} px</span>
+                    </div>
                 `;
             } else {
-                let cssCode = (gradient.type === 'linear')
-                    ? `linear-gradient(${gradient.direction}deg, ${gradient.color1}, ${gradient.color2});`
-                    : `radial-gradient(circle, ${gradient.color1}, ${gradient.color2});`;
+                let cssCode;
+                if (gradient.type === 'linear') {
+                    cssCode = `linear-gradient(${gradient.direction}deg, ${gradient.color1}, ${gradient.color2});`;
+                } else {
+                    cssCode = `radial-gradient(circle, ${gradient.color1}, ${gradient.color2});`;
+                }
                 container.innerHTML = `
-                    <div class="color-code" style="grid-column: 1 / -1;"><strong>CSS:</strong> <span id="cssCode" style="word-break: break-all;">${cssCode}</span></div>
-                    <div class="color-code"><strong>Size:</strong> <span id="sizeInfo">${document.getElementById('width').value} x ${document.getElementById('height').value} px</span></div>
+                    <div class="color-code" style="grid-column: 1 / -1;">
+                        <strong>CSS:</strong> <span id="cssCode" style="word-break: break-all;">${cssCode}</span>
+                    </div>
+                    <div class="color-code">
+                        <strong>Size:</strong> <span id="sizeInfo">${document.getElementById('width').value} x ${document.getElementById('height').value} px</span>
+                    </div>
                 `;
             }
             updateSizeInfo();
@@ -637,7 +706,8 @@
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
                 const [w, h] = ratio.split(':').map(Number);
-                document.getElementById('height').value = Math.round((parseInt(document.getElementById('width').value) * h) / w);
+                const widthInput = document.getElementById('width');
+                document.getElementById('height').value = Math.round((parseInt(widthInput.value) * h) / w);
             }
             updateSizeInfo();
         }
@@ -646,7 +716,8 @@
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
                 const [w, h] = ratio.split(':').map(Number);
-                document.getElementById('width').value = Math.round((parseInt(document.getElementById('height').value) * w) / h);
+                const heightInput = document.getElementById('height');
+                document.getElementById('width').value = Math.round((parseInt(heightInput.value) * w) / h);
             }
             updateSizeInfo();
         }
@@ -655,22 +726,33 @@
             const width = document.getElementById('width').value;
             const height = document.getElementById('height').value;
             const sizeInfo = document.getElementById('sizeInfo');
-            if(sizeInfo) sizeInfo.textContent = `${width} x ${height} px`;
+            if(sizeInfo) {
+                sizeInfo.textContent = `${width} x ${height} px`;
+            }
         }
 
         function updateDimensions() {
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
+                const widthInput = document.getElementById('width');
                 const [w, h] = ratio.split(':').map(Number);
-                document.getElementById('height').value = Math.round((parseInt(document.getElementById('width').value) * h) / w);
+                document.getElementById('height').value = Math.round((parseInt(widthInput.value) * h) / w);
             }
             updatePreview();
             updateSizeInfo();
         }
 
         function generateRandomColor() {
-            const randomHex = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
             const mode = document.getElementById('backgroundType').value;
+            
+            const randomHex = () => {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            };
 
             if (mode === 'solid') {
                 updateColor(randomHex());
@@ -698,7 +780,7 @@
                 ctx.fillRect(0, 0, width, height);
             } else {
                 if (gradient.type === 'linear') {
-                    const angle = (gradient.direction - 90) * Math.PI / 180;
+                    const angle = gradient.direction * Math.PI / 180;
                     const x0 = width / 2 + Math.cos(angle) * width / 2;
                     const y0 = height / 2 + Math.sin(angle) * height / 2;
                     const x1 = width / 2 - Math.cos(angle) * width / 2;
@@ -718,15 +800,19 @@
             
             const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
             const quality = format === 'jpg' ? 0.9 : undefined;
+            
             canvas.toBlob(function(blob) {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
                 
-                let colorPart = (mode === 'solid') 
-                    ? currentColor.substring(1) 
-                    : `${gradient.color1.substring(1)}_${gradient.color2.substring(1)}`;
-                
+                let colorPart;
+                if (mode === 'solid') {
+                    colorPart = currentColor.substring(1);
+                } else {
+                    colorPart = `${gradient.color1.substring(1)}_${gradient.color2.substring(1)}`;
+                }
+
                 a.download = `bg-${colorPart}-${width}x${height}.${format}`;
                 document.body.appendChild(a);
                 a.click();
@@ -741,13 +827,12 @@
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
         }
-        function rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase(); }
+        function rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
         function rgbToHsl(r, g, b) {
             r /= 255; g /= 255; b /= 255;
             const max = Math.max(r, g, b), min = Math.min(r, g, b);
             let h, s, l = (max + min) / 2;
-            if (max === min) { h = s = 0; } 
-            else {
+            if (max === min) { h = s = 0; } else {
                 const d = max - min;
                 s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
                 switch (max) {
@@ -772,65 +857,15 @@
 
         // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
-            // Jalankan setup awal
             updateColorInputs();
             updatePreview();
             updateColorCodes();
             updateSizeInfo();
             updateBackgroundMode();
             
-            // --- KODE BARU YANG DIPERBAIKI ---
-            const urlParams = new URLSearchParams(window.location.search);
-            const shouldDownload = urlParams.get('download');
-
-            if (shouldDownload) {
-                // 1. Ambil semua parameter dari URL, gunakan nilai default jika tidak ada
-                const type = urlParams.get('type') || 'solid';
-                const width = urlParams.get('width') || '1920';
-                const height = urlParams.get('height') || '1080';
-
-                // 2. Atur nilai pada elemen kontrol terlebih dahulu
-                document.getElementById('width').value = width;
-                document.getElementById('height').value = height;
-                document.getElementById('backgroundType').value = type;
-
-                // 3. Panggil event listener secara manual untuk memicu update
-                document.getElementById('backgroundType').dispatchEvent(new Event('change'));
-
-                if (type === 'solid') {
-                    const color = '#' + (urlParams.get('color') || 'ffffff');
-                    updateColor(color);
-                } else { // 'gradient'
-                    const color1 = '#' + (urlParams.get('color1') || '667eea');
-                    const color2 = '#' + (urlParams.get('color2') || '764ba2');
-                    const direction = urlParams.get('angle') || '90';
-                    const gradientType = urlParams.get('gradientType') || 'linear';
-
-                    const g1Input = document.getElementById('gradientColor1');
-                    const g2Input = document.getElementById('gradientColor2');
-                    const dirInput = document.getElementById('gradientDirection');
-                    const typeInput = document.getElementById('gradientType');
-
-                    g1Input.value = color1;
-                    g2Input.value = color2;
-                    dirInput.value = direction;
-                    typeInput.value = gradientType;
-                    
-                    // Picu semua event listener yang relevan untuk gradien
-                    g1Input.dispatchEvent(new Event('input', { bubbles: true }));
-                    g2Input.dispatchEvent(new Event('input', { bubbles: true }));
-                    dirInput.dispatchEvent(new Event('input', { bubbles: true }));
-                    typeInput.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-
-                // 4. Beri jeda singkat sebelum mengekspor untuk memastikan semua rendering selesai
-                setTimeout(exportImage, 200); 
-            }
-            // --- AKHIR DARI KODE YANG DIPERBAIKI ---
-            
             Coloris({
-                el: '#gradientColor1, #gradientColor2, #colorPicker',
-                parent: '.container',
+                el: '#gradientColor1, #gradientColor2',
+                parent: '#gradientControls',
                 themeMode: 'light',
                 alpha: false,
                 format: 'hex',
