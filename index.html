@@ -772,48 +772,61 @@
 
         // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
+            // Jalankan setup awal
             updateColorInputs();
             updatePreview();
             updateColorCodes();
             updateSizeInfo();
             updateBackgroundMode();
             
-            // --- KODE BARU DITAMBAHKAN DI SINI ---
+            // --- KODE BARU YANG DIPERBAIKI ---
             const urlParams = new URLSearchParams(window.location.search);
             const shouldDownload = urlParams.get('download');
 
             if (shouldDownload) {
+                // 1. Ambil semua parameter dari URL, gunakan nilai default jika tidak ada
                 const type = urlParams.get('type') || 'solid';
-                document.getElementById('backgroundType').value = type;
-                
                 const width = urlParams.get('width') || '1920';
                 const height = urlParams.get('height') || '1080';
+
+                // 2. Atur nilai pada elemen kontrol terlebih dahulu
                 document.getElementById('width').value = width;
                 document.getElementById('height').value = height;
+                document.getElementById('backgroundType').value = type;
+
+                // 3. Panggil event listener secara manual untuk memicu update
+                document.getElementById('backgroundType').dispatchEvent(new Event('change'));
 
                 if (type === 'solid') {
-                    const color = '#' + (urlParams.get('color') || '667eea');
+                    const color = '#' + (urlParams.get('color') || 'ffffff');
                     updateColor(color);
-                } else if (type === 'gradient') {
+                } else { // 'gradient'
                     const color1 = '#' + (urlParams.get('color1') || '667eea');
                     const color2 = '#' + (urlParams.get('color2') || '764ba2');
                     const direction = urlParams.get('angle') || '90';
                     const gradientType = urlParams.get('gradientType') || 'linear';
 
-                    document.getElementById('gradientColor1').value = color1;
-                    document.getElementById('gradientColor2').value = color2;
-                    document.getElementById('gradientDirection').value = direction;
-                    document.getElementById('gradientType').value = gradientType;
+                    const g1Input = document.getElementById('gradientColor1');
+                    const g2Input = document.getElementById('gradientColor2');
+                    const dirInput = document.getElementById('gradientDirection');
+                    const typeInput = document.getElementById('gradientType');
+
+                    g1Input.value = color1;
+                    g2Input.value = color2;
+                    dirInput.value = direction;
+                    typeInput.value = gradientType;
                     
-                    updateGradient();
+                    // Picu semua event listener yang relevan untuk gradien
+                    g1Input.dispatchEvent(new Event('input', { bubbles: true }));
+                    g2Input.dispatchEvent(new Event('input', { bubbles: true }));
+                    dirInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    typeInput.dispatchEvent(new Event('change', { bubbles: true }));
                 }
 
-                updateBackgroundMode();
-
-                // Beri sedikit waktu (100ms) untuk memastikan DOM dan canvas ter-update sebelum ekspor
-                setTimeout(exportImage, 100); 
+                // 4. Beri jeda singkat sebelum mengekspor untuk memastikan semua rendering selesai
+                setTimeout(exportImage, 200); 
             }
-            // --- AKHIR KODE BARU ---
+            // --- AKHIR DARI KODE YANG DIPERBAIKI ---
             
             Coloris({
                 el: '#gradientColor1, #gradientColor2, #colorPicker',
@@ -829,7 +842,6 @@
         });
     </script>
     <script>
-      // Service worker (opsional, bisa dibiarkan)
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').then(registration => {
@@ -842,4 +854,3 @@
     </script>
 </body>
 </html>
-
