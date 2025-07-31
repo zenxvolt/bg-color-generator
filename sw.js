@@ -26,7 +26,15 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  const path = url.pathname;
+  // Adjust path for GitHub Pages subdirectory
+  const scopePath = new URL(self.registration.scope).pathname;
+  let path = url.pathname;
+  if (path.startsWith(scopePath) && scopePath !== '/') {
+      path = path.substring(scopePath.length);
+      if (!path.startsWith('/')) {
+          path = '/' + path;
+      }
+  }
 
   // Pattern for solid: /solid-ff0000-1920x1080.png
   const solidPattern = /^\/solid-([a-fA-F0-9]{3,6})-([0-9]+x[0-9]+)\.(png|jpe?g|webp)$/i;
