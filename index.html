@@ -14,22 +14,23 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: white;
             min-height: 100vh;
+            display: flex;
+            position: relative; /* Untuk positioning tombol hamburger */
         }
-
         .container {
+            flex-grow: 1;
             max-width: 600px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
+            z-index: 1;
         }
-
         h1 {
             text-align: center;
             color: #333;
@@ -40,40 +41,37 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .main-content {
             display: grid;
             grid-template-columns: 1fr;
             gap: 30px;
             align-items: start;
         }
-
         .controls, .preview-section, .export-settings {
             background: white;
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-
         .section-title {
             font-size: 1.3rem;
             color: #333;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
         .form-group {
             margin-bottom: 20px;
         }
-
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: #555;
         }
-
         input, select {
             width: 100%;
             padding: 12px;
@@ -82,26 +80,22 @@
             font-size: 14px;
             transition: all 0.3s ease;
         }
-
         input:focus, select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-
         .color-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
         }
-
         .preset-colors {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
             gap: 8px;
             margin-top: 10px;
         }
-
         .preset-color {
             width: 40px;
             height: 40px;
@@ -110,18 +104,15 @@
             border: 3px solid transparent;
             transition: all 0.2s ease;
         }
-
         .preset-color:hover {
             transform: scale(1.1);
             border-color: #333;
         }
-
         .dimension-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-
         .preview-container {
             width: 100%;
             height: 300px;
@@ -133,26 +124,22 @@
             position: relative;
             overflow: hidden;
         }
-
         .preview-box {
             width: 100%;
             height: 100%;
             transition: all 0.3s ease;
         }
-
         .color-info {
             background: rgba(0, 0, 0, 0.1);
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
-
         .color-codes {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-
         .color-code {
             background: white;
             padding: 8px;
@@ -161,7 +148,6 @@
             font-size: 12px;
             border: 1px solid #ddd;
         }
-
         .export-btn {
             width: 100%;
             padding: 15px;
@@ -175,16 +161,13 @@
             transition: all 0.3s ease;
             margin-top: 20px;
         }
-
         .export-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
-
         .export-btn:active {
             transform: translateY(0);
         }
-
         .random-btn {
             width: 100%;
             padding: 12px;
@@ -198,23 +181,22 @@
             transition: all 0.3s ease;
             margin-top: 10px;
         }
-
         .random-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
         }
-
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
             }
+            .container {
+                padding: 20px;
+            }
         }
-
         .tooltip {
             position: relative;
             display: inline-block;
         }
-
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 120px;
@@ -232,25 +214,163 @@
             transition: opacity 0.3s;
             font-size: 12px;
         }
-
         .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
         }
-
         #gradientControls .clr-picker {
             width: 100%;
+        }
+
+        /* Sidebar Styles */
+        .sidebar-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Sembunyikan tombol hamburger saat sidebar terbuka */
+        body.sidebar-open .sidebar-toggle {
+            display: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px; /* Sembunyikan sidebar di luar layar */
+            width: 350px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .sidebar.open {
+            right: 0; /* Tampilkan sidebar */
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            /* font-size: 24px; */ /* Ukuran lama */
+            font-size: 32px; /* Ukuran baru yang diperbesar */
+            cursor: pointer;
+            color: #333;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        .close-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .api-section {
+            margin-bottom: 25px;
+        }
+
+        .api-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        code {
+            display: block;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .api-section ul {
+            padding-left: 20px;
+        }
+
+        .api-section li {
+            margin-bottom: 5px;
+        }
+
+        .api-section p {
+            margin-bottom: 10px;
+        }
+
+        .api-section a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .api-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Overlay untuk mobile */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .overlay.open {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Konten Utama -->
     <div class="container">
         <h1>🎨 Background Color Generator</h1>
-        
         <div class="main-content">
             <div class="controls">
                 <h2 class="section-title">Color Settings</h2>
-
                 <div class="form-group">
                     <label>Background Type:</label>
                     <select id="backgroundType">
@@ -258,7 +378,6 @@
                         <option value="gradient">Gradient</option>
                     </select>
                 </div>
-
                 <div id="solidControls">
                     <div class="form-group">
                         <label>Color Input Method:</label>
@@ -269,12 +388,10 @@
                             <option value="name">Color Name</option>
                         </select>
                     </div>
-
                     <div id="colorInputs">
                         <!-- Color inputs will be dynamically generated here -->
                     </div>
                 </div>
-
                 <div id="gradientControls" style="display: none;">
                     <div class="form-group">
                         <label>Color 1:</label>
@@ -296,7 +413,6 @@
                         </select>
                     </div>
                 </div>
-                
                 <div class="form-group">
                     <label>Preset Colors:</label>
                     <div class="preset-colors">
@@ -334,15 +450,12 @@
                     <button class="random-btn" onclick="generateRandomColor()">Random Color</button>
                 </div>
             </div>
-
             <div class="preview-section">
                 <h2 class="section-title">Preview</h2>
-                
                 <div class="preview-container" id="previewContainer">
                     <div class="preview-box" id="previewBox">
                     </div>
                 </div>
-
                 <div class="color-info">
                     <h3 style="margin-bottom: 10px; color: #333;">Color Information:</h3>
                     <div class="color-codes" id="colorCodesContainer">
@@ -361,10 +474,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="export-settings">
                 <h2 class="section-title">Export Settings</h2>
-                
                 <div class="form-group">
                     <label>Aspect Ratio:</label>
                     <select id="aspectRatio" onchange="updateDimensions()">
@@ -377,7 +488,6 @@
                         <option value="21:9">21:9 (Ultrawide)</option>
                     </select>
                 </div>
-
                 <div class="dimension-inputs">
                     <div class="form-group">
                         <label>Width (px):</label>
@@ -388,7 +498,6 @@
                         <input type="number" id="height" value="1080" min="1" max="4000">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label>File Format:</label>
                     <select id="fileFormat">
@@ -397,47 +506,57 @@
                         <option value="webp">WebP</option>
                     </select>
                 </div>
-
                 <button class="export-btn" onclick="exportImage()">
                     Export Image
                 </button>
             </div>
+            <!-- Bagian API dihapus dari sini -->
+        </div>
+    </div>
 
-            <div class="api-docs">
-                <h2 class="section-title">Image API</h2>
-                <p>You can generate images dynamically by crafting a URL. Here’s how:</p>
-                
-                <div class="api-section">
-                    <h3>Solid Color</h3>
-                    <code>/solid-[color]-[width]x[height].[format]</code>
-                    <p><strong>Example:</strong> <a href="/solid-ff0000-1920x1080.png" target="_blank">/solid-ff0000-1920x1080.png</a></p>
-                    <ul>
-                        <li><code>[color]</code>: Hex color code (e.g., ff0000).</li>
-                        <li><code>[width]</code>: Image width in pixels.</li>
-                        <li><code>[height]</code>: Image height in pixels.</li>
-                        <li><code>[format]</code>: png, jpg, or webp.</li>
-                    </ul>
-                </div>
+    <!-- Tombol Toggle Sidebar (Hamburger) -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
+    
+    <!-- Overlay untuk mobile -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-                <div class="api-section">
-                    <h3>Gradient</h3>
-                    <code>/gradient-[color1]-[color2]-[angle]-[type]-[width]x[height].[format]</code>
-                    <p><strong>Example:</strong> <a href="/gradient-667eea-764ba2-90-linear-1920x1080.png" target="_blank">/gradient-667eea-764ba2-90-linear-1920x1080.png</a></p>
-                    <ul>
-                        <li><code>[color1]</code>, <code>[color2]</code>: Hex color codes.</li>
-                        <li><code>[angle]</code>: Gradient angle (0-360).</li>
-                        <li><code>[type]</code>: 'linear' or 'radial'.</li>
-                        <li><code>[width]</code>, <code>[height]</code>: Image dimensions.</li>
-                        <li><code>[format]</code>: png, jpg, or webp.</li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Sidebar -->
+    <div class="sidebar" id="apiSidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Image API</h2>
+            <button class="close-btn" onclick="toggleSidebar()">×</button>
+        </div>
+        <p>You can generate images dynamically by crafting a URL. Here's how:</p>
+        
+        <div class="api-section">
+            <h3>Solid Color</h3>
+            <code>/solid-[color]-[width]x[height].[format]</code>
+            <p><strong>Example:</strong> <a href="/solid-ff0000-1920x1080.png" target="_blank">/solid-ff0000-1920x1080.png</a></p>
+            <ul>
+                <li><code>[color]</code>: Hex color code (e.g., ff0000).</li>
+                <li><code>[width]</code>: Image width in pixels.</li>
+                <li><code>[height]</code>: Image height in pixels.</li>
+                <li><code>[format]</code>: png, jpg, or webp.</li>
+            </ul>
+        </div>
+        
+        <div class="api-section">
+            <h3>Gradient</h3>
+            <code>/gradient-[color1]-[color2]-[angle]-[type]-[width]x[height].[format]</code>
+            <p><strong>Example:</strong> <a href="/gradient-667eea-764ba2-90-linear-1920x1080.png" target="_blank">/gradient-667eea-764ba2-90-linear-1920x1080.png</a></p>
+            <ul>
+                <li><code>[color1]</code>, <code>[color2]</code>: Hex color codes.</li>
+                <li><code>[angle]</code>: Gradient angle (0-360).</li>
+                <li><code>[type]</code>: 'linear' or 'radial'.</li>
+                <li><code>[width]</code>, <code>[height]</code>: Image dimensions.</li>
+                <li><code>[format]</code>: png, jpg, or webp.</li>
+            </ul>
         </div>
     </div>
 
     <canvas id="exportCanvas" style="display: none;"></canvas>
-
     <script>
+        // ... (Script bagian bawah sama seperti sebelumnya, tidak diubah)
         let currentColor = '#667eea';
         let gradient = {
             color1: '#667eea',
@@ -445,7 +564,6 @@
             direction: 90,
             type: 'linear'
         };
-
         const namedColors = {
             'coral': '#ff7f50', 'turquoise': '#40e0d0', 'gold': '#ffd700', 'salmon': '#fa8072',
             'khaki': '#f0e68c', 'plum': '#dda0dd', 'orange': '#ffa500', 'lime': '#00ff00',
@@ -454,29 +572,44 @@
             'green': '#008000', 'blue': '#0000ff', 'yellow': '#ffff00', 'cyan': '#00ffff',
             'magenta': '#ff00ff', 'white': '#ffffff', 'black': '#000000'
         };
-
         // Event listeners
         document.getElementById('backgroundType').addEventListener('change', updateBackgroundMode);
         document.getElementById('colorMethod').addEventListener('change', updateColorInputs);
         document.getElementById('width').addEventListener('input', updateFromWidth);
         document.getElementById('height').addEventListener('input', updateFromHeight);
-
         document.getElementById('gradientColor1').addEventListener('input', updateGradient);
         document.getElementById('gradientColor2').addEventListener('input', updateGradient);
         document.getElementById('gradientDirection').addEventListener('input', updateGradient);
         document.getElementById('gradientType').addEventListener('change', updateGradient);
-
         document.querySelectorAll('.preset-color').forEach(color => {
             color.addEventListener('click', function() {
                 updateColor(this.dataset.color);
             });
         });
 
+        // Fungsi untuk toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('apiSidebar');
+            const overlay = document.getElementById('overlay');
+            const body = document.body;
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+            
+            // Toggle class pada body untuk menyembunyikan tombol hamburger
+            if (sidebar.classList.contains('open')) {
+                // Sidebar dibuka
+                body.classList.add('sidebar-open');
+            } else {
+                // Sidebar ditutup (baik dengan overlay maupun tombol X)
+                body.classList.remove('sidebar-open');
+            }
+        }
+
         function updateBackgroundMode() {
             const mode = document.getElementById('backgroundType').value;
             const solidControls = document.getElementById('solidControls');
             const gradientControls = document.getElementById('gradientControls');
-
             if (mode === 'solid') {
                 solidControls.style.display = 'block';
                 gradientControls.style.display = 'none';
@@ -487,7 +620,6 @@
             updatePreview();
             updateColorCodes();
         }
-
         function updateGradient() {
             gradient.color1 = document.getElementById('gradientColor1').value;
             gradient.color2 = document.getElementById('gradientColor2').value;
@@ -496,17 +628,14 @@
             updatePreview();
             updateColorCodes();
         }
-
         function updateColor(newColor, fromInput = false) {
             currentColor = newColor;
             updatePreview();
             updateColorCodes();
-
             const swatch = document.getElementById('colorSwatch');
             if (swatch) {
                 swatch.style.backgroundColor = newColor;
             }
-
             // Update the value of the active input field
             const method = document.getElementById('colorMethod').value;
             if (!fromInput) {
@@ -541,11 +670,9 @@
                 }
             }
         }
-
         function updateColorInputs() {
             const method = document.getElementById('colorMethod').value;
             const container = document.getElementById('colorInputs');
-            
             switch(method) {
                 case 'picker':
                     container.innerHTML = `
@@ -559,7 +686,6 @@
                     `;
                     Coloris.init();
                     break;
-                    
                 case 'hex':
                     container.innerHTML = `
                         <div class="form-group">
@@ -569,7 +695,6 @@
                     `;
                     document.getElementById('hexInput').addEventListener('input', updateColorFromHex);
                     break;
-                    
                 case 'rgb':
                     const rgb = hexToRgb(currentColor);
                     container.innerHTML = `
@@ -592,7 +717,6 @@
                         document.getElementById(id).addEventListener('input', updateColorFromRgb);
                     });
                     break;
-                    
                 case 'name':
                     container.innerHTML = `
                         <div class="form-group">
@@ -607,7 +731,6 @@
                     break;
             }
         }
-
         function updateColorFromHex() {
             const hexInput = document.getElementById('hexInput');
             let hex = hexInput.value.toUpperCase();
@@ -619,26 +742,22 @@
                 updateColor(hex, true);
             }
         }
-
         function updateColorFromRgb() {
             const r = parseInt(document.getElementById('redInput').value) || 0;
             const g = parseInt(document.getElementById('greenInput').value) || 0;
             const b = parseInt(document.getElementById('blueInput').value) || 0;
             updateColor(rgbToHex(r, g, b), true);
         }
-
         function updateColorFromName() {
             const name = document.getElementById('nameInput').value.toLowerCase();
             if (namedColors[name]) {
                 updateColor(namedColors[name], true);
             }
         }
-
         function updatePreview() {
             const previewBox = document.getElementById('previewBox');
             const previewContainer = document.getElementById('previewContainer');
             const mode = document.getElementById('backgroundType').value;
-
             if (mode === 'solid') {
                 previewBox.style.background = currentColor;
             } else {
@@ -648,7 +767,6 @@
                     previewBox.style.background = `radial-gradient(circle, ${gradient.color1}, ${gradient.color2})`;
                 }
             }
-            
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
                 const [w, h] = ratio.split(':').map(Number);
@@ -661,11 +779,9 @@
                 previewContainer.style.height = '300px';
             }
         }
-
         function updateColorCodes() {
             const container = document.getElementById('colorCodesContainer');
             const mode = document.getElementById('backgroundType').value;
-
             if (mode === 'solid') {
                 const rgb = hexToRgb(currentColor);
                 const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
@@ -701,7 +817,6 @@
             }
             updateSizeInfo();
         }
-
         function updateFromWidth() {
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
@@ -711,7 +826,6 @@
             }
             updateSizeInfo();
         }
-
         function updateFromHeight() {
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
@@ -721,7 +835,6 @@
             }
             updateSizeInfo();
         }
-
         function updateSizeInfo() {
             const width = document.getElementById('width').value;
             const height = document.getElementById('height').value;
@@ -730,7 +843,6 @@
                 sizeInfo.textContent = `${width} x ${height} px`;
             }
         }
-
         function updateDimensions() {
             const ratio = document.getElementById('aspectRatio').value;
             if (ratio !== 'custom') {
@@ -741,10 +853,8 @@
             updatePreview();
             updateSizeInfo();
         }
-
         function generateRandomColor() {
             const mode = document.getElementById('backgroundType').value;
-            
             const randomHex = () => {
                 const letters = '0123456789ABCDEF';
                 let color = '#';
@@ -753,7 +863,6 @@
                 }
                 return color;
             };
-
             if (mode === 'solid') {
                 updateColor(randomHex());
             } else {
@@ -763,7 +872,6 @@
                 document.getElementById('gradientColor2').dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
-
         function exportImage() {
             const canvas = document.getElementById('exportCanvas');
             const ctx = canvas.getContext('2d');
@@ -771,10 +879,8 @@
             const height = parseInt(document.getElementById('height').value);
             const format = document.getElementById('fileFormat').value;
             const mode = document.getElementById('backgroundType').value;
-            
             canvas.width = width;
             canvas.height = height;
-
             if (mode === 'solid') {
                 ctx.fillStyle = currentColor;
                 ctx.fillRect(0, 0, width, height);
@@ -797,22 +903,18 @@
                 }
                 ctx.fillRect(0, 0, width, height);
             }
-            
             const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
             const quality = format === 'jpg' ? 0.9 : undefined;
-            
             canvas.toBlob(function(blob) {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                
                 let colorPart;
                 if (mode === 'solid') {
                     colorPart = currentColor.substring(1);
                 } else {
                     colorPart = `${gradient.color1.substring(1)}_${gradient.color2.substring(1)}`;
                 }
-
                 a.download = `bg-${colorPart}-${width}x${height}.${format}`;
                 document.body.appendChild(a);
                 a.click();
@@ -820,7 +922,6 @@
                 URL.revokeObjectURL(url);
             }, mimeType, quality);
         }
-
         // Utility functions
         function isValidHex(hex) { return /^#[0-9A-F]{6}$/i.test(hex); }
         function hexToRgb(hex) {
@@ -844,7 +945,6 @@
             }
             return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
         }
-
         // Initialize Coloris
         document.addEventListener('coloris:pick', event => {
             const target = event.detail.target;
@@ -854,7 +954,6 @@
                 updateColor(event.detail.color, true);
             }
         });
-
         // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
             updateColorInputs();
@@ -862,7 +961,6 @@
             updateColorCodes();
             updateSizeInfo();
             updateBackgroundMode();
-            
             Coloris({
                 el: '#gradientColor1, #gradientColor2',
                 parent: '#gradientControls',
