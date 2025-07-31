@@ -402,6 +402,36 @@
                     Export Image
                 </button>
             </div>
+
+            <div class="api-docs">
+                <h2 class="section-title">Image API</h2>
+                <p>You can generate images dynamically by crafting a URL. Here’s how:</p>
+                
+                <div class="api-section">
+                    <h3>Solid Color</h3>
+                    <code>/solid-[color]-[width]x[height].[format]</code>
+                    <p><strong>Example:</strong> <a href="/solid-ff0000-1920x1080.png" target="_blank">/solid-ff0000-1920x1080.png</a></p>
+                    <ul>
+                        <li><code>[color]</code>: Hex color code (e.g., ff0000).</li>
+                        <li><code>[width]</code>: Image width in pixels.</li>
+                        <li><code>[height]</code>: Image height in pixels.</li>
+                        <li><code>[format]</code>: png, jpg, or webp.</li>
+                    </ul>
+                </div>
+
+                <div class="api-section">
+                    <h3>Gradient</h3>
+                    <code>/gradient-[color1]-[color2]-[angle]-[type]-[width]x[height].[format]</code>
+                    <p><strong>Example:</strong> <a href="/gradient-667eea-764ba2-90-linear-1920x1080.png" target="_blank">/gradient-667eea-764ba2-90-linear-1920x1080.png</a></p>
+                    <ul>
+                        <li><code>[color1]</code>, <code>[color2]</code>: Hex color codes.</li>
+                        <li><code>[angle]</code>: Gradient angle (0-360).</li>
+                        <li><code>[type]</code>: 'linear' or 'radial'.</li>
+                        <li><code>[width]</code>, <code>[height]</code>: Image dimensions.</li>
+                        <li><code>[format]</code>: png, jpg, or webp.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
